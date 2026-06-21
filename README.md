@@ -1,133 +1,82 @@
-<div id="top">
+# Conversion Rate Prediction
 
-<!-- HEADER STYLE: CLASSIC -->
-<div align="center">
-
-
-# PROJECT3-CERTIFICATION-CONVERSION-RATE
-
-<em>Transform Data into Winning Conversion Strategies</em>
-
-<!-- BADGES -->
-<img src="https://img.shields.io/github/last-commit/mmatthieu1290/Project3-Certification-Conversion-Rate?style=flat&logo=git&logoColor=white&color=0080ff" alt="last-commit">
-<img src="https://img.shields.io/github/languages/top/mmatthieu1290/Project3-Certification-Conversion-Rate?style=flat&color=0080ff" alt="repo-top-language">
-<img src="https://img.shields.io/github/languages/count/mmatthieu1290/Project3-Certification-Conversion-Rate?style=flat&color=0080ff" alt="repo-language-count">
-
-<em>Built with the tools and technologies:</em>
-
-<img src="https://img.shields.io/badge/Markdown-000000.svg?style=flat&logo=Markdown&logoColor=white" alt="Markdown">
-
-</div>
-<br>
+Binary classification to predict whether a user will subscribe to a newsletter, based on browsing behavior and demographic features. Includes systematic comparison of multiple models and business recommendations derived from model interpretation.
 
 ---
 
-## Table of Contents
+## Results
 
-- [Overview](#overview)
-- [Caracteristics of the Dataset](#Caracteristics-of-the-Dataset)
-- [Methodology and conclusions](#Methodology-and-conclusions)
-- [Files](#Files)
-- [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-    - [Usage](#usage)
-    - [Testing](#testing)
+**Best model:** XGBoost (without `source` feature)
+**F1-score on test set:** 0.78
+**Most predictive feature:** `total_pages_visited`
 
 ---
 
-## Overview
+## Dataset
 
-Project3-Certification-Conversion-Rate is a comprehensive developer tool that guides you through building, analyzing, and deploying machine learning models for conversion rate prediction. It provides a clear, structured workflow from raw data to actionable predictions, supporting both development and deployment phases.
+284,580 observations — imbalanced dataset (3.2% positive class).
 
-**Why Project3-Certification-Conversion-Rate?**
-
-This project aims to simplify the creation of predictive models for conversion likelihoods. The core features include:
-
-- 🛠️ **End-to-End Workflow:** From data processing to model evaluation, streamline your entire ML pipeline.
-- 📊 **Data Analysis & Visualization:** Leverage integrated tools to explore datasets and derive insights.
-- ⚙️ **Model Training & Tuning:** Build and optimize models with ease, ensuring robust performance.
-- 🚀 **Deployment Support:** Facilitate seamless integration into broader system architectures.
-- 🔍 **Comprehensive Implementation:** Clear, well-structured codebase for easy customization and extension.
-
-**Video link:** https://share.vidyard.com/watch/6k6ysKodwx133tFYV77VDK?
-
----
-## Caracteristics of the Dataset
-
-**Target variable:** Binary variable (converted). The dataset is imbalanced, with only 3.2% of observations labeled positive.
-
-**Features:** country, age, new user (binary variable), source, total_pages_visited.
-
-**Size of Dataset:** 284580 observations
+| Feature | Description |
+|---|---|
+| `country` | User country (China, US, UK, Germany) |
+| `age` | User age |
+| `new_user` | 1 if first visit, 0 otherwise |
+| `source` | Traffic source (Ads, SEO, Direct) |
+| `total_pages_visited` | Number of pages visited in the session |
+| `converted` | Target — 1 if subscribed, 0 otherwise |
 
 ---
 
-## Methodology and conclusions
+## Methodology
 
-**Considered models:** Logistic Regression, K-Nearest Neighbors, Xgboost.
+1. **EDA** — conversion rates by country, source, and new/returning users; logistic curves for age and pages visited
+2. **Preprocessing** — OneHotEncoding (country, source), StandardScaler (age, total_pages_visited), stratified train/test split
+3. **Feature selection** — four feature combinations tested (all features, without source, without age, without new_user)
+4. **Model comparison** — Logistic Regression, KNN, XGBoost with GridSearchCV (5-fold CV, optimized on F1)
+5. **Evaluation** — F1-score, confusion matrices, ROC curves across all model/feature combinations
+6. **Business recommendations** — derived from LR coefficients and conversion rate analysis
 
-**Best model:** Logistic Regression
+---
 
-**Best f1_score:** 0,78.
+## Key Findings
 
-**Most relevant future:** total_pages_visited.
+- `total_pages_visited` is by far the strongest predictor of conversion
+- Returning users convert at higher rates than new users
+- Chinese users show very low conversion rates (~0.1% vs ~4-6% for other countries)
+- Traffic source has minimal impact on conversion probability
+
+**Recommendations to the newspaper:** prioritize engagement strategies that encourage users to visit more pages and return to the site; do not invest in promotion in China.
+
+---
+
+## Models Compared
+
+| Model | Feature set | F1 test |
+|---|---|---|
+| XGBoost | Without source | 0.78 |
+| XGBoost | All features | 0.78 |
+| Logistic Regression | All features | 0.78 |
+| KNN | All features | 0.78 |
 
 ---
 
 ## Files
 
-**Version_finale_projet3_Matthieu_Marechal.ipynb:** code.
-
-**conversion_data_train.csv:** labeled dataset.
-
-**conversion_data_test.csv:** unlabeled dataset.
-
-**conversion_data_test_predictions_MARECHAL.csv:** prediction on conversion_data_set.csv
-
-## Getting Started
-
-### Prerequisites
-
-This project requires the following dependencies:
-
-- **Programming Language:** JupyterNotebook
-
-### Installation
-
-Build Project3-Certification-Conversion-Rate from the source and install dependencies:
-
-1. **Clone the repository:**
-
-    ```sh
-    ❯ git clone https://github.com/mmatthieu1290/Project3-Certification-Conversion-Rate
-    ```
-
-2. **Navigate to the project directory:**
-
-    ```sh
-    ❯ cd Project3-Certification-Conversion-Rate
-    ```
-
-3. **Install the dependencies:**
-
-echo 'INSERT-INSTALL-COMMAND-HERE'
-
-### Usage
-
-Run the project with:
-
-echo 'INSERT-RUN-COMMAND-HERE'
-
-### Testing
-
-Project3-certification-conversion-rate uses the {__test_framework__} test framework. Run the test suite with:
-
-echo 'INSERT-TEST-COMMAND-HERE'
+| File | Description |
+|---|---|
+| `Version_finale_projet3_Matthieu_Marechal.ipynb` | Full notebook |
+| `conversion_data_train.csv` | Labeled dataset (284,580 rows) |
+| `conversion_data_test.csv` | Unlabeled dataset for prediction |
+| `conversion_data_test_predictions_MARECHAL.csv` | Final predictions |
 
 ---
 
-<div align="left"><a href="#top">⬆ Return</a></div>
+## Installation
 
----
+```bash
+git clone https://github.com/mmatthieu1290/Conversion-Rate
+cd Conversion-Rate
+pip install pandas numpy scikit-learn xgboost plotly seaborn
+```
 
+Then open and run `Version_finale_projet3_Matthieu_Marechal.ipynb` in Jupyter.
